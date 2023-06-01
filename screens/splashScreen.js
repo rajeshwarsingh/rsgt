@@ -1,5 +1,6 @@
 import { StyleSheet, BackHandler, Text, View, SafeAreaView, StatusBar, Dimensions, Image, ActivityIndicator } from 'react-native'
-import React, { useCallback } from 'react'
+import React, { useCallback } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Colors, Fonts, Sizes } from '../constants/styles'
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -20,10 +21,23 @@ const SplashScreen = ({ navigation }) => {
     );
 
 
-    setTimeout(() => {
-        // IF STUDENT ALREADY REGISTERD SEND TO DASHBOARD
-        // SENT TO SINGUP PAGE
-        navigation.push('Signup')
+    setTimeout(async() => {
+        try {
+            // Check if the flag or token exists in AsyncStorage
+            const userDetailsExists = await AsyncStorage.getItem('userDetails');
+        
+            // If the flag or token exists, the user has already filled in their details
+            if (userDetailsExists) {
+              console.log('User details already filled in');
+              return navigation.push('Home')
+            } else {
+              console.log('User details not filled in');
+              return navigation.push('Signup')
+            }
+          } catch (error) {
+            console.log('Error checking user details:', error);
+          }
+       
     }, 2000);
 
     return (

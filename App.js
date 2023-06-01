@@ -1,3 +1,4 @@
+import React from 'react'
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { LogBox } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native';
@@ -32,7 +33,7 @@ import SplashScreen from './screens/splashScreen';
 import LoginScreen from './screens/auth/loginScreen';
 import SignupScreen from './screens/auth/signupScreen';
 import VerificationScreen from './screens/auth/verificationScreen';
-
+import ToastMessage from './components/ToastMessage';
 LogBox.ignoreAllLogs()
 
 const Stack = createStackNavigator();
@@ -77,7 +78,11 @@ function MyApp() {
         <Stack.Screen name="Support" component={SupportScreen} />
         <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
         <Stack.Screen name="ChangePasswordSuccess" component={ChangePasswordSuccessScreen} options={{ ...TransitionPresets.ModalSlideFromBottomIOS }} />
+        
       </Stack.Navigator>
+      <React.Fragment>
+        <ToastMessage />
+      </React.Fragment>
     </NavigationContainer>
   );
 }

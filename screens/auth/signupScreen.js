@@ -1,10 +1,13 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, Image, Dimensions, ScrollView, TextInput, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, Image, Dimensions, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { Colors, Fonts, Sizes } from '../../constants/styles'
 import { MaterialIcons, Ionicons, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
+import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Gender from '../../components/gender';
 import DOBPicker from '../../components/DOBPicker';
 import StandardsPicker from '../../components/standardsPicker';
+import { signupApi } from '../../api/index';
 
 const { width } = Dimensions.get('window');
 
@@ -15,7 +18,6 @@ const SignupScreen = ({ navigation }) => {
     const [name, setname] = useState('');
     const [mobileNumber, setmobileNumber] = useState('');
     const [email, setemail] = useState('');
-    const [std, setStd] = useState('');
     const [selectedGender, setSelectedGender] = useState('');
     const [selectedStandards, setSelectedStandards] = useState('');
     const [selectedDOB, setSelectedDOB] = useState(null);
@@ -24,25 +26,73 @@ const SignupScreen = ({ navigation }) => {
     const [selectedAddress, setSelectedAddress] = useState('');
 
     const handleSelectGender = (gender) => {
-        alert(gender)
         setSelectedGender(gender);
     };
 
     const handleStandards = (standardIdx) => {
-        alert(standards[standardIdx])
         setSelectedStandards(standards[standardIdx])
     };
 
-  const handleDOBChange = (date) => {
-    alert(date)
-    setSelectedDOB(date);
-  };
+    const handleDOBChange = (date) => {
+        setSelectedDOB(date);
+    };
 
-  const handleSignup =(data)=>{
-    console.log("signup :- ",name,mobileNumber,email,selectedGender,selectedStandards,selectedMedium,
-    selectedSchoolorCollage,selectedAddress, selectedDOB)
-    //return navigation.push('Home');
-  }
+    const isValidatedSignup = (data)=>{
+
+        if(!data.name){
+            Alert.alert(`Please provide Full Name`)
+            return false
+        }
+        if(!data.mobileNumber){
+            alert(`Please provide Mobile Number`)
+            return false
+        }
+        if(!data.gender){
+            Alert.alert(`Please provide Gender`)
+            return false
+        }
+        return true
+    } 
+    const handleSignup = async () => {
+        // Prepare the signup data
+        const signupData = {
+            name,
+            mobileNumber,
+            email,
+            gender: selectedGender,
+            standard: selectedStandards,
+            dob: selectedDOB,
+            medium: selectedMedium,
+            schoolorCollage: selectedSchoolorCollage,
+            address: selectedAddress,
+        };
+
+        if(!isValidatedSignup(signupData)){
+            return
+        }
+
+        try {
+            // Make the API call
+            await signupApi(signupData);
+            await AsyncStorage.setItem('userDetails', JSON.stringify(signupData));
+            
+            // Display toast message
+            Toast.show({
+                type: 'success',
+                text1: 'Signup Successful',
+                text2: 'You have successfully signed up.',
+            });
+            return navigation.push('Home');
+        } catch (error) {
+            // Signup failed, show error message
+            console.error('Error:', error);
+            Toast.show({
+                type: 'error',
+                text1: 'Signup Failed',
+                text2: 'Failed to sign up. Please try again.',
+            });
+        }
+    };
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
@@ -74,7 +124,7 @@ const SignupScreen = ({ navigation }) => {
                 <TextInput
                     value={name}
                     onChangeText={(value) => setname(value)}
-                    placeholder='Name'
+                    placeholder='Full Name'
                     placeholderTextColor={Colors.grayColor}
                     style={styles.textFieldStyle}
                     cursorColor={Colors.primaryColor}
@@ -209,7 +259,6 @@ const SignupScreen = ({ navigation }) => {
             </Text>
         )
     }
-
     function googleAndFacebookButton() {
         return (
             <View style={{ flexDirection: 'row', }}>

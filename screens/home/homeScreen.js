@@ -1,13 +1,21 @@
 import { StyleSheet, Text, View, BackHandler, SafeAreaView, StatusBar, ScrollView, ImageBackground, Dimensions, Image, TouchableOpacity } from 'react-native'
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { Colors, Fonts, Sizes } from '../../constants/styles'
 import { Ionicons } from '@expo/vector-icons';
 import { Overlay } from '@rneui/themed';
 import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation }) => {
+    useEffect(()=>{
+        removeItem()
+    },[])
+    
+    async function removeItem(){
+        await AsyncStorage.removeItem('userDetails')
+    }
 
     const backAction = () => {
         backClickCount == 1 ? BackHandler.exitApp() : _spring();
@@ -128,15 +136,15 @@ const HomeScreen = ({ navigation }) => {
     function options() {
         return (
             <View style={styles.optionsWrapStyle}>
-                {optionSort({
+                {/* {optionSort({
                     bgColor: Colors.lightPurpleColor,
                     icon: require('../../assets/images/icons/syllabus.png'),
                     title: 'Syllabus',
                     description: 'What to learn',
                     onPress: () => { navigation.push('Syllabus') }
-                })}
+                })} */}
                 {optionSort({
-                    bgColor: Colors.lightCreamColor,
+                    bgColor: Colors.lightGreenColor,
                     icon: require('../../assets/images/icons/assignment.png'),
                     title: 'Study Materils ',
                     description: 'What to learn',
