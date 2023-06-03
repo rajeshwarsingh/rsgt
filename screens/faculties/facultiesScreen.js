@@ -1,65 +1,50 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ImageBackground, Image, TouchableOpacity, FlatList, } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
 import { Colors, Fonts, Sizes } from '../../constants/styles'
 import { MaterialIcons } from '@expo/vector-icons';
 
-const subjectsList = ['All', 'Maths', 'Sci', 'Eng', 'Eco', 'AC', 'Com'];
-
-const facultiesList = [
-    {
-        id: '1',
-        facultyName: 'Leslie Alexander',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.Porta elementum elementum nisl sagittis.',
-        subjectsKnown: ['Maths', 'Sci', 'Eco'],
-        facultyImage: require('../../assets/images/faculties/faculty1.png')
-    },
-    {
-        id: '2',
-        facultyName: 'Brooklyn Simmons',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.Porta elementum elementum nisl sagittis.',
-        subjectsKnown: ['AC', 'Maths', 'Sci'],
-        facultyImage: require('../../assets/images/faculties/faculty2.png')
-    },
-    {
-        id: '3',
-        facultyName: 'Jacob Jones',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.Porta elementum elementum nisl sagittis.',
-        subjectsKnown: ['Eng', 'Com'],
-        facultyImage: require('../../assets/images/faculties/faculty3.png')
-    },
-    {
-        id: '4',
-        facultyName: 'Wade Warren',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.Porta elementum elementum nisl sagittis.',
-        subjectsKnown: ['Eco', 'Sci', 'Eng'],
-        facultyImage: require('../../assets/images/faculties/faculty4.png')
-    },
-    {
-        id: '5',
-        facultyName: 'Marvin McKinney',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.Porta elementum elementum nisl sagittis.',
-        subjectsKnown: ['Maths', 'AC'],
-        facultyImage: require('../../assets/images/faculties/faculty5.png')
-    },
-    {
-        id: '6',
-        facultyName: 'Bessie Cooper',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.Porta elementum elementum nisl sagittis.',
-        subjectsKnown: ['Sci', 'Eng'],
-        facultyImage: require('../../assets/images/faculties/faculty6.png')
-    },
-    {
-        id: '7',
-        facultyName: 'Devon Lane',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.Porta elementum elementum nisl sagittis.',
-        subjectsKnown: ['Maths', 'Eco'],
-        facultyImage: require('../../assets/images/faculties/faculty7.png')
-    },
-];
+import { getFaculty, getSubjects } from '../../api/index';
 
 const FacultiesScreen = ({ navigation }) => {
 
     const [selectedSubjectIndex, setSelectedSubjectIndex] = useState(0);
+
+    const [facultiesList, setFacultiesList] = useState([]);
+    const [subjectsList, setSubjectsList] = useState([]);
+
+    useEffect(() => {
+        const fetchSM = async () => {
+            try {
+
+                const data = await getFaculty();
+                // console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",data);
+                const dataFacultyList = data;
+                console.log("dataFacultyList :", dataFacultyList);
+                setFacultiesList(dataFacultyList);
+            } catch (error) {
+                console.error('Error fetching SM:', error);
+            }
+        };
+
+        fetchSM();
+    }, []);
+
+    useEffect(() => {
+        const fetchSM = async () => {
+            try {
+
+                const data = await getSubjects();
+                const dataSubjectList = data.map(subject => subject.name);
+                console.log("dataSubjectList :", dataSubjectList);
+                setSubjectsList(dataSubjectList);
+            } catch (error) {
+                console.error('Error fetching SM:', error);
+            }
+        };
+
+        fetchSM();
+    }, []);
+
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.primaryColor }}>

@@ -58,7 +58,7 @@ const TestScreen = ({ navigation }) => {
                         ListHeaderComponent={
                             <>
                                 {runningTestInfo()}
-                                {oldTestsInfo()}
+                                {/* {oldTestsInfo()} */}
                             </>
                         }
                         showsVerticalScrollIndicator={false}

@@ -22,7 +22,8 @@ const SupportScreen = ({ navigation }) => {
                         {supportText()}
                         {callUsInfo()}
                         {mailUsInfo()}
-                        {submitButton()}
+                        {address()}
+                        {/* {submitButton()} */}
                     </ScrollView>
                 </View>
             </ImageBackground>
@@ -50,7 +51,26 @@ const SupportScreen = ({ navigation }) => {
                     Mail us
                 </Text>
                 <Text style={styles.callAndMailTextStyle}>
-                    scholarstudy@gmail.com
+                    riteshsingh8655@gmail.com
+                </Text>
+            </View>
+        )
+    }
+
+    function address() {
+        return (
+            <View style={{ marginTop: Sizes.fixPadding * 2.0, marginHorizontal: Sizes.fixPadding * 2.0, }}>
+                <Text numberOfLines={1} style={{ marginBottom: Sizes.fixPadding - 5.0, ...Fonts.grayColor13Regular }}>
+                    Address :
+                </Text>
+                <Text style={styles.callAndMailTextStyle}>
+                    Shop No. 12/13 Harishri Residency 2 Chikhloli Jambhul Phata, Ambernath West, Mumbai, Maharashtra 421505
+                </Text>
+                <Text style={styles.callAndMailTextStyle}>
+                    Shop No. 12/13 Harishri Residency 2 Chikhloli Jambhul Phata, Ambernath West, Mumbai, Maharashtra 421505
+                </Text>
+                <Text style={styles.callAndMailTextStyle}>
+                    Shop No. 12/13 Harishri Residency 2 Chikhloli Jambhul Phata, Ambernath West, Mumbai, Maharashtra 421505
                 </Text>
             </View>
         )
@@ -63,7 +83,7 @@ const SupportScreen = ({ navigation }) => {
                     Call us
                 </Text>
                 <Text style={styles.callAndMailTextStyle}>
-                    +91 1236547890
+                    +91 72763 17065
                 </Text>
             </View>
         )
@@ -73,10 +93,10 @@ const SupportScreen = ({ navigation }) => {
         return (
             <View style={{ marginHorizontal: Sizes.fixPadding * 2.0, marginVertical: Sizes.fixPadding, alignItems: 'center' }}>
                 <Text style={{ textAlign: 'center', ...Fonts.blackColor20Medium }}>
-                    Get Support
+                    Reach Us
                 </Text>
                 <Text style={{ marginTop: Sizes.fixPadding - 5.0, textAlign: 'center', ...Fonts.grayColor13Regular }}>
-                    For any support and request...{`\n`}Please feel free to speak with us at below.
+                Unlock Your Potential, Join Our Classes Today!
                 </Text>
             </View>
         )

@@ -5,17 +5,32 @@ import { Ionicons } from '@expo/vector-icons';
 import { Overlay } from '@rneui/themed';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BannerAds } from '../../components/AdMobComponent'
+import { getProfile } from '../../utils/index';
 
 const { width } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation }) => {
-    useEffect(()=>{
-        removeItem()
-    },[])
-    
-    async function removeItem(){
-        await AsyncStorage.removeItem('userDetails')
+    const [profile, setProfile] = useState({});
+
+    useEffect(() => {
+        fetchProfile()
+    }, [])
+
+    async function fetchProfile() {
+        const data = await getProfile();
+        setProfile(data)
     }
+
+
+    // useEffect(() => {
+    //     removeItem()
+    // }, [])
+
+
+    // async function removeItem() {
+    //     await AsyncStorage.removeItem('userDetails')
+    // }
 
     const backAction = () => {
         backClickCount == 1 ? BackHandler.exitApp() : _spring();
@@ -56,11 +71,12 @@ const HomeScreen = ({ navigation }) => {
                             style={{ width: '100%', height: 100, flex: 1, }}
                             resizeMode="stretch"
                         ></ImageBackground>
-                        <ImageBackground
+                        <BannerAds />
+                        {/* <ImageBackground
                             source={require('../../assets/images/faculties/faculty2.png')}
                             style={{ width: '100%', height: 50, flex: 1, }}
                             resizeMode="stretch"
-                        ></ImageBackground>
+                        ></ImageBackground> */}
                         {/* {attendanceAndFeesInfo()} */}
                         {options()}
                     </ScrollView>
@@ -192,13 +208,13 @@ const HomeScreen = ({ navigation }) => {
                     description: 'About school',
                     onPress: () => { navigation.push('SchoolGallery') }
                 })}
-                {/* {optionSort({
+                {optionSort({
                     bgColor: Colors.lightPurpleColor,
                     icon: require('../../assets/images/icons/doubt.png'),
                     title: 'Ask Doubts',
                     description: 'What to learn',
                     onPress: () => { navigation.push('AskDoubts') }
-                })} */}
+                })}
                 {optionSort({
                     bgColor: Colors.lightCreamColor,
                     icon: require('../../assets/images/icons/faculties.png'),
@@ -213,13 +229,13 @@ const HomeScreen = ({ navigation }) => {
                     description: 'All conversation',
                     onPress: () => { navigation.push('Messages') }
                 })} */}
-                {/* {optionSort({
+                {optionSort({
                     bgColor: Colors.lightCyanColor,
                     icon: require('../../assets/images/icons/support.png'),
-                    title: 'Support',
-                    description: 'Know about us',
+                    title: 'ContactUS',
+                    description: 'Reach out to us',
                     onPress: () => { navigation.push('Support') }
-                })} */}
+                })}
                 {/* {optionSort({
                     bgColor: Colors.lightPurpleColor,
                     icon: require('../../assets/images/icons/lock.png'),
@@ -304,7 +320,7 @@ const HomeScreen = ({ navigation }) => {
             </TouchableOpacity>
         )
     }
-
+    console.log("profile :",profile)
     function header() {
         return (
             <View style={styles.headerWrapStyle}>
@@ -320,10 +336,10 @@ const HomeScreen = ({ navigation }) => {
                     </TouchableOpacity>
                     <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding * 2.0, }}>
                         <Text numberOfLines={1} style={{ ...Fonts.whiteColor18SemiBold }}>
-                            Hello, Samantha
+                            Hello, {profile?.name}
                         </Text>
                         <Text style={{ marginTop: Sizes.fixPadding - 2.0, ...Fonts.whiteColor15Regular, color: '#ffffff60' }}>
-                            Class XI | Roll no: 05
+                            Class {profile?.standard} | Gender: {profile?.gender}
                         </Text>
                     </View>
                 </View>

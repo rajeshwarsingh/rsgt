@@ -33,6 +33,7 @@ const SplashScreen = ({ navigation }) => {
             } else {
               console.log('User details not filled in');
               return navigation.push('Signup')
+            //   return navigation.push('Home')
             }
           } catch (error) {
             console.log('Error checking user details:', error);

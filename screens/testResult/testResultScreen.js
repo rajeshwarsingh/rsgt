@@ -1,11 +1,45 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ScrollView, Dimensions, TouchableOpacity, ImageBackground, Image } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Colors, Fonts, Sizes } from '../../constants/styles'
 import { MaterialIcons } from '@expo/vector-icons';
+import { getProfile } from '../../utils/index';
+import {BannerAds} from '../../components/AdMobComponent'
 
 const { width } = Dimensions.get('window');
 
-const TestResultScreen = ({ navigation }) => {
+const TestResultScreen = ({ route, navigation }) => {
+    const { questions = [] } = route.params;
+    let correct = 0;
+    let skipped = 0;
+    let Wrong = 0;
+    questions.map((question => {
+        if (!question.userAnswer) {
+            skipped++;
+        };
+
+        if(question.correctAnswer === question.userAnswer) {
+            correct++;
+        };
+
+        if(question.correctAnswer === question.userAnswer) {
+            Wrong++;
+        };
+    }));
+
+    const [profile, setProfile] = useState({});
+
+    useEffect(() => {
+        fetchProfile();
+    }, [])
+
+    async function fetchProfile() {
+        const data = await getProfile();
+        setProfile(data);
+    }
+
+    
+    // const [correct, setCorrect] = useState()
+    
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.primaryColor }}>
             <StatusBar translucent={false} backgroundColor={Colors.primaryColor} />
@@ -20,37 +54,73 @@ const TestResultScreen = ({ navigation }) => {
                     <ScrollView showsVerticalScrollIndicator={false}>
                         {gradePercentageInfo()}
                         {greatMessage()}
-                        {resultSort({ title: 'Correct Answers', result: '17(85%)', borderColor: Colors.darkGreenColor })}
-                        {resultSort({ title: 'Skipped Answers', result: '01(5%)', borderColor: Colors.secondaryColor })}
-                        {resultSort({ title: 'Wrong Answers', result: '02(10%)', borderColor: Colors.redColor })}
+                        {resultSort({ title: 'Correct Answers', result:  `${correct}(${(correct/questions.length)*100}%)`, borderColor: Colors.darkGreenColor })}
+                        {resultSort({ title: 'Skipped Answers', result: `${skipped}(${(skipped/questions.length)*100}%)`, borderColor: Colors.secondaryColor })}
+                        {resultSort({ title: 'Wrong Answers', result:  `${Wrong}(${(Wrong/questions.length)*100}%)`, borderColor: Colors.redColor })}
+                        {instruction()}
                         {leaderBoardAndAnswerSheetButton()}
+                        {showAds()}
                     </ScrollView>
                 </View>
             </ImageBackground>
         </SafeAreaView>
     )
 
+    function showAds(){
+
+        return <BannerAds/>
+    }
+
     function leaderBoardAndAnswerSheetButton() {
         return (
             <View style={styles.leaderBoardAndAnswerSheetButtonWrapStyle}>
                 <TouchableOpacity
                     activeOpacity={0.8}
-                    onPress={() => { navigation.push('LeaderBoard') }}
+                    onPress={() => { navigation.push('Home') }}
                     style={{ backgroundColor: Colors.secondaryColor, ...styles.buttonStyle, }}
                 >
                     <Text numberOfLines={1} style={{ ...Fonts.whiteColor17Bold }}>
-                        Leaderboard
+                        Home
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     activeOpacity={0.8}
-                    onPress={() => { navigation.push('AnswerSheet') }}
+                    onPress={() => { navigation.push('AnswerSheet',{questions}) }}
                     style={{ backgroundColor: Colors.whiteColor, ...styles.buttonStyle }}
                 >
                     <Text numberOfLines={1} style={{ ...Fonts.secondaryColor17Bold }}>
                         Answer Sheet
                     </Text>
                 </TouchableOpacity>
+            </View>
+        )
+    }
+
+    function instruction() {
+        return (
+            <View style={styles.leaderBoardAndAnswerSheetButtonWrapStyle}>
+                {/* <Text numberOfLines={1} >
+                    Visit our branch to get goodies on reference.
+                </Text> */}
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => { navigation.push('Support') }}
+                    style={{ backgroundColor: Colors.secondaryColor, ...styles.buttonStyle, }}
+                >
+                    <Text numberOfLines={1} style={{ ...Fonts.whiteColor17Bold }}>
+                        VisitUs and win 500Rs/Referal
+                    </Text>
+                </TouchableOpacity>
+                {/* 
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => { navigation.push('AnswerSheet',{questions}) }}
+                    style={{ backgroundColor: Colors.whiteColor, ...styles.buttonStyle }}
+                >
+                    <Text numberOfLines={1} style={{ ...Fonts.secondaryColor17Bold }}>
+                        Answer Sheet
+                    </Text>
+                </TouchableOpacity> */}
             </View>
         )
     }
@@ -81,10 +151,10 @@ const TestResultScreen = ({ navigation }) => {
         return (
             <View style={{ alignItems: 'center', marginBottom: Sizes.fixPadding * 2.0 }}>
                 <Text style={{ textAlign: 'center', ...Fonts.blackColor15Medium }}>
-                    You’re Excellent
+                {promptGrade((correct/questions.length)*100)['message']}
                 </Text>
                 <Text style={{ marginTop: Sizes.fixPadding, textAlign: 'center', ...Fonts.blackColor30BebasRegular }}>
-                    Samantha Smith !!
+                {profile?.name} !!
                 </Text>
             </View>
         )
@@ -97,10 +167,10 @@ const TestResultScreen = ({ navigation }) => {
                 style={styles.gradeWithPercentageImageStyle}
             >
                 <Text style={{ textAlign: 'center', ...Fonts.whiteColor44BebasRegular }}>
-                    95%
+                    {(correct/questions.length)*100}%
                 </Text>
                 <Text style={{ textAlign: 'center', ...Fonts.whiteColor13SemiBold }}>
-                    GRADE A
+                    GRADE {promptGrade((correct/questions.length)*100)['grade']}
                 </Text>
             </ImageBackground>
         )
@@ -172,3 +242,27 @@ const styles = StyleSheet.create({
         padding: Sizes.fixPadding + 5.0,
     }
 })
+
+function promptGrade(percentage) {
+    let grade;
+    let message;
+  
+    if (percentage >= 90) {
+      grade = 'A';
+      message = 'Excellent!';
+    } else if (percentage >= 80) {
+      grade = 'B';
+      message = 'Good job!';
+    } else if (percentage >= 70) {
+      grade = 'C';
+      message = 'Well done!';
+    } else if (percentage >= 60) {
+      grade = 'D';
+      message = 'Keep improving!';
+    } else {
+      grade = 'F';
+      message = 'You need to work harder!';
+    }
+  
+    return { grade, message };
+  }

@@ -1,29 +1,31 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, TouchableOpacity, Dimensions, ImageBackground, TextInput } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, TouchableOpacity, Dimensions, ImageBackground, TextInput,Alert } from 'react-native'
+import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 import { Colors, Fonts, Sizes } from '../../constants/styles'
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 import { Menu } from 'react-native-material-menu';
 import { ScrollView } from 'react-native-gesture-handler';
-
+import { doubtApi, getFaculty, getSubjects } from '../../api/index';
 const { height } = Dimensions.get('window');
 
-const teachersList = [
-    'Kathryn Murphy',
-    'Jane Cooper',
-    'Leslie Alexander',
-    'Brooklyn Simmons',
-    'Jacob Jones',
-    'Courtney Henry',
-];
+// const teachersList = [
+//     'Kathryn Murphy',
+//     'Jane Cooper',
+//     'Leslie Alexander',
+//     'Brooklyn Simmons',
+//     'Jacob Jones',
+//     'Courtney Henry',
+// ];
 
-const subjectsList = [
-    'Mathematics',
-    'English',
-    'Economics',
-    'Accounting',
-    'Science',
-    'Computer',
-];
+// const subjectsList = [
+//     'Mathematics',
+//     'English',
+//     'Economics',
+//     'Accounting',
+//     'Science',
+//     'Computer',
+// ];
 
 const AskDoubtsScreen = ({ navigation }) => {
 
@@ -33,6 +35,106 @@ const AskDoubtsScreen = ({ navigation }) => {
     const [selectedTeacher, setSelectedTeacher] = useState('');
     const [showSubjectsMenu, setShowSubjectsMenu] = useState(false);
     const [selectedSubject, setSelectedSubject] = useState('');
+
+    const [teachersList, setTeachersList] = useState([]);
+    const [subjectsList, setSubjectsList] = useState([]);
+    
+    useEffect(() => {
+        const fetchSM = async () => {
+            try {
+                
+                const data = await getFaculty();
+                // console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",data);
+                const dataTeacherList = data.map(teacher=>teacher.facultyName);
+                console.log("dataTeacherList :",dataTeacherList);
+                setTeachersList(dataTeacherList);
+            } catch (error) {
+                console.error('Error fetching SM:', error);
+            }
+        };
+
+        fetchSM();
+    }, []);
+
+    useEffect(() => {
+        const fetchSM = async () => {
+            try {
+                
+                const data = await getSubjects();
+                const dataSubjectList = data.map(subject=>subject.name);
+                console.log("dataSubjectList :",dataSubjectList);
+                setSubjectsList(dataSubjectList);
+            } catch (error) {
+                console.error('Error fetching SM:', error);
+            }
+        };
+
+        fetchSM();
+    }, []);
+
+
+
+    const isValidatedDoubt = (data)=>{
+        if(!data.title){
+            Alert.alert(`Please provide title`)
+            return false
+        }
+        if(!data.description){
+            Alert.alert(`Please provide description`)
+            return false
+        }
+        return true
+    } 
+    
+    const handleDoubt = async () => {
+        
+        let  userDetails={};
+        let name='';
+        let mobile='';
+        try{
+            userDetails = await AsyncStorage.getItem('userDetails');
+            userDetails = JSON.parse(userDetails);
+            name = userDetails?.name;
+            mobile = userDetails?.mobile;
+        }catch(e){
+            // log the error
+            console.log("Error in parsing the userdetails in doubts",e)
+        }
+        
+        // Prepare the doubt data
+        const doubtsData = {
+            "teacher":selectedTeacher, 
+            "subject":selectedSubject, 
+            "title":title, 
+            "description":description, 
+            "name":name, 
+            "mobile":mobile,
+        };
+        if(!isValidatedDoubt(doubtsData)){
+            return
+        }
+
+        try {
+            // Make the API call
+            await doubtApi(doubtsData);
+            
+            // Display toast message
+            Toast.show({
+                type: 'success',
+                text1: 'Doubt sent Successful',
+                text2: 'You have successfully send.',
+            });
+            return navigation.push('Home');
+        } catch (error) {
+            // doubt failed, show error message
+            console.error('Error:', error);
+            Toast.show({
+                type: 'error',
+                text1: 'Doubt Failed',
+                text2: 'Failed to doubt. Please try again.',
+            });
+        }
+    };
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.primaryColor }}>
@@ -148,7 +250,7 @@ const AskDoubtsScreen = ({ navigation }) => {
         return (
             <TouchableOpacity
                 activeOpacity={0.8}
-                onPress={() => { navigation.pop() }}
+                onPress={handleDoubt}
                 style={styles.buttonStyle}
             >
                 <Text style={{ ...Fonts.whiteColor17Bold }}>

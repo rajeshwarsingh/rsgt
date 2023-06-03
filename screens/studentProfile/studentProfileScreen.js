@@ -1,13 +1,26 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ScrollView, ImageBackground, TouchableOpacity, Image, TextInput } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import { Colors, Fonts, Sizes } from '../../constants/styles'
 import { MaterialIcons, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { BottomSheet } from '@rneui/themed';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { getProfile } from '../../utils/index';
 
 const monthsList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sup', 'Oct', 'Nov', 'Des'];
 
 const StudentProfileScreen = ({ navigation }) => {
+
+    // const signupData = {
+    //     name,
+    //     mobileNumber,
+    //     email,
+    //     gender: selectedGender,
+    //     standard: selectedStandards,
+    //     dob: selectedDOB,
+    //     medium: selectedMedium,
+    //     schoolorCollage: selectedSchoolorCollage,
+    //     address: selectedAddress,
+    // };
 
     const [adharNo, setAdharNo] = useState('1234 5698 4569 1578');
     const [academicYear, setAcademicYear] = useState('2020-2021');
@@ -22,6 +35,27 @@ const StudentProfileScreen = ({ navigation }) => {
     const [fatherName, setFatherName] = useState('Cameron Smith');
     const [address, setAddress] = useState('Westheimer Rd. Santa Ana, Illinois');
     const [showBottomSheet, setShowBottomSheet] = useState(false);
+
+    const [profile, setProfile] = useState({});
+
+    useEffect(() => {
+        fetchProfile();
+    }, [])
+
+    async function fetchProfile() {
+        const data = await getProfile();
+        console.log("@@@@@@@@@@@@@@@@@:",data)
+        setProfile(data)
+        setAdmissionClass(data?.aadhar)
+        setOldAdmissionNo(data?.aadhar)
+        setDateOfAdmission(data?.aadhar)
+        setDateOfBirth(data?.dob)
+        setParntMailId(data?.aadhar)
+        setMotherName(data?.aadhar)
+        setFatherName(data?.aadhar)
+        setAddress(data?.address)
+    }
+
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.primaryColor }}>
@@ -297,8 +331,9 @@ const StudentProfileScreen = ({ navigation }) => {
             </View>
         )
     }
-
+  
     function profileInfo() {
+        console.log('@@@@@@@@@@@@profile :',profile)
         return (
             <View style={styles.profileInfoWrapStyle}>
                 <Image
@@ -307,10 +342,10 @@ const StudentProfileScreen = ({ navigation }) => {
                 />
                 <View style={{ flex: 1, marginLeft: Sizes.fixPadding + 5.0, }}>
                     <Text numberOfLines={1} style={{ ...Fonts.blackColor18Bold, }}>
-                        Samantha Smith
+                    {profile?.name}
                     </Text>
                     <Text style={{ ...Fonts.grayColor16Regular }}>
-                        Class XI-A | Roll no: 05
+                    Class {profile?.standard} | Gender: {profile?.gender}
                     </Text>
                 </View>
                 <TouchableOpacity

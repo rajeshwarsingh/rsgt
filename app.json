@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Online Class Student App",
-    "slug": "rn-OnlineClassStudentApp",
+    "name": "rsgt",
+    "slug": "rsgt",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -15,12 +15,12 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "com.render.rnonlineclassstudentapp",
+      "bundleIdentifier": "com.rsgt",
       "buildNumber": "1.0.0",
       "supportsTablet": true
     },
     "android": {
-      "package": "com.render.rnonlineclassstudentapp",
+      "package": "com.rsgt",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
@@ -29,6 +29,14 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "39da2b8d-3e7d-42de-927d-04c3a47ea717"
+      }
     }
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-9155008277126927~8333991217"
   }
 }

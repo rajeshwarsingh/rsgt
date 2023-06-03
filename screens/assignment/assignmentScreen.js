@@ -1,35 +1,26 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ImageBackground, FlatList, } from 'react-native'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Colors, Fonts, Sizes } from '../../constants/styles'
 import { MaterialIcons } from '@expo/vector-icons';
-
-const assignmentsList = [
-    {
-        id: '1',
-        subject: 'Mathematics',
-        topicTitle: 'Sets and Functions',
-        asssignDate: '12 Dec 2020',
-        lastSubmissionDate: '17 Dec 2020',
-    },
-    {
-        id: '2',
-        subject: 'Economics',
-        topicTitle: 'Statistics for Economics',
-        note: '(Introduction)',
-        asssignDate: '15 Feb 2021',
-        lastSubmissionDate: '21 Feb 2021',
-    },
-    {
-        id: '3',
-        subject: 'English',
-        topicTitle: 'Short Writing Task',
-        note: '(Notice Writing)',
-        asssignDate: '15 Feb 2021',
-        lastSubmissionDate: '21 Feb 2021',
-    },
-];
+import ManageDoc from '../../components/ManageDoc'
+import { getStudyMaterialApi } from '../../api/index'
 
 const AssignmentScreen = ({ navigation }) => {
+    const [studyMaterial, setStudyMaterial] = useState([]);
+    useEffect(() => {
+        const fetchSM = async () => {
+            try {
+                
+                const data = await getStudyMaterialApi('X');
+                setStudyMaterial(data);
+            } catch (error) {
+                console.error('Error fetching SM:', error);
+            }
+        };
+
+        fetchSM();
+    }, []);
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.primaryColor }}>
             <StatusBar translucent={false} backgroundColor={Colors.primaryColor} />
@@ -54,6 +45,12 @@ const AssignmentScreen = ({ navigation }) => {
                         {item.subject}
                     </Text>
                 </View>
+                <View>
+                    {/* <Text style={{ ...Fonts.secondaryColor13SemiBold }}> */}
+                    <ManageDoc />
+                    {/* </Text> */}
+                </View>
+                
                 <Text style={{ marginTop: Sizes.fixPadding + 5.0, ...Fonts.blackColor14Medium }}>
                     {item.topicTitle}
                     {
@@ -68,25 +65,25 @@ const AssignmentScreen = ({ navigation }) => {
                 </Text>
                 <View style={{ marginVertical: Sizes.fixPadding, ...styles.rowAlignCenterSpaceBetween }}>
                     <Text style={{ flex: 1, ...Fonts.grayColor13Regular }}>
-                        Assign Date
+                        Uploaded Date
                     </Text>
                     <Text style={{ ...Fonts.blackColor13Medium }}>
                         {item.asssignDate}
                     </Text>
                 </View>
-                <View style={styles.rowAlignCenterSpaceBetween}>
+                {/* <View style={styles.rowAlignCenterSpaceBetween}>
                     <Text style={{ flex: 1, ...Fonts.grayColor13Regular }}>
                         Last Submission Date
                     </Text>
                     <Text style={{ ...Fonts.blackColor13Medium }}>
                         {item.lastSubmissionDate}
                     </Text>
-                </View>
+                </View> */}
             </View>
         )
         return (
             <FlatList
-                data={assignmentsList}
+                data={studyMaterial}
                 keyExtractor={(item) => `${item.id}`}
                 renderItem={renderItem}
                 contentContainerStyle={{ paddingTop: Sizes.fixPadding * 2.0, }}

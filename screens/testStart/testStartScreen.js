@@ -1,250 +1,8 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ImageBackground, ScrollView, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ImageBackground, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { Colors, Fonts, Sizes } from '../../constants/styles'
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-
-const questionsList = [
-    {
-        id: '1',
-        question: 'Which Economist divided Economics in two branches of micro and macro on the basis of economic activity?',
-        options: [
-            'Marshall',
-            'Ricardo',
-            'Ragnar Frish',
-            'None of these'
-        ],
-        correctAnswer: 'None of these',
-        userAnswer: '',
-    },
-    {
-        id: '2',
-        question: 'Which of the following is studied under Micro Economics?',
-        options: [
-            'Individual unit',
-            'Economic Aggregate',
-            'National Income',
-            'None of these'
-        ],
-        correctAnswer: 'None of these',
-        userAnswer: '',
-    },
-    {
-        id: '3',
-        question: '‘Micros’, which means ‘Small’ belongs to:',
-        options: [
-            'Arabian word',
-            'Greek word',
-            'German word',
-            'English worde'
-        ],
-        correctAnswer: 'Greek word',
-        userAnswer: '',
-    },
-    {
-        id: '4',
-        question: 'Which of the following statement is true?',
-        options: [
-            'Human wants are infinite',
-            'Resources are limited',
-            'Scarcity problem gives birth',
-            'All of these'
-        ],
-        correctAnswer: 'Scarcity problem gives birth',
-        userAnswer: '',
-    },
-    {
-        id: '5',
-        question: 'Which is a central problem of an economy?',
-        options: [
-            'Allocation of Resources',
-            'Optimum Utilisation of Resources',
-            'Economic Development',
-            'All of these'
-        ],
-        correctAnswer: 'All of these',
-        userAnswer: '',
-    },
-    {
-        id: '6',
-        question: 'Which of the following Is a type of economic activities?',
-        options: [
-            'Production',
-            'Consumption',
-            'Exchange and Investment',
-            'All of these'
-        ],
-        correctAnswer: 'All of these',
-        userAnswer: '',
-    },
-    {
-        id: '7',
-        question: 'To which factor, economic problem is basically related to:',
-        options: [
-            'Choice',
-            'Consumer’s Selection',
-            'Firm Selection',
-            'None of these'
-        ],
-        correctAnswer: 'Choice',
-        userAnswer: '',
-    },
-    {
-        id: '8',
-        question: 'Economy may be classified as:',
-        options: [
-            'Capitalist',
-            'Socialist',
-            'Mixed',
-            'All of these'
-        ],
-        correctAnswer: 'All of these',
-        userAnswer: '',
-    },
-    {
-        id: '9',
-        question: 'Which economy has a co-existence of private and public sectors?',
-        options: [
-            'Capitalist',
-            'Socialist',
-            'Mixed',
-            'All of these'
-        ],
-        correctAnswer: 'Mixed',
-        userAnswer: '',
-    },
-    {
-        id: '10',
-        question: 'The main objective of a socialist economy is…….',
-        options: [
-            'Maximum production',
-            'Economic freedom',
-            'Earning profit',
-            'Maximum public welfare'
-        ],
-        correctAnswer: 'Maximum public welfare',
-        userAnswer: '',
-    },
-    {
-        id: '11',
-        question: 'In which economy decisions are taken on the basis of price mechanism?',
-        options: [
-            'Socialist',
-            'Capitalist',
-            'Mixed',
-            'All of these'
-        ],
-        correctAnswer: 'Capitalist',
-        userAnswer: '',
-    },
-    {
-        id: '12',
-        question: 'Production Possibility Curve is:',
-        options: [
-            'Concave to the axis',
-            'Convex to the axis',
-            'Parallel to the axis',
-            'Vertical to the axis'
-        ],
-        correctAnswer: 'Concave to the axis',
-        userAnswer: '',
-    },
-    {
-        id: '13',
-        question: 'Mention the name of the curve which shows economic problem:',
-        options: [
-            'Production Curve',
-            'Demand Curve',
-            'Indifference Curve',
-            'Production Possibility Curve'
-        ],
-        correctAnswer: 'Production Possibility Curve',
-        userAnswer: '',
-    },
-    {
-        id: '14',
-        question: 'Which of the following is studied under Macro Economics?',
-        options: [
-            'National Income',
-            'Full. Employment',
-            'Total Production',
-            'All of these'
-        ],
-        correctAnswer: 'All of these',
-        userAnswer: '',
-    },
-    {
-        id: '15',
-        question: 'Which of the following Is a branch of Micro Economics?',
-        options: [
-            'Product Price Determination',
-            'Factor Price Determination',
-            'Economic Welfare',
-            'All of these'
-        ],
-        correctAnswer: 'All of these',
-        userAnswer: '',
-    },
-    {
-        id: '16',
-        question: 'Which of the following is a source of production?',
-        options: [
-            'Land',
-            'Labour',
-            'Capital',
-            'All of these'
-        ],
-        correctAnswer: 'All of these',
-        userAnswer: '',
-    },
-    {
-        id: '17',
-        question: 'Who said, “Economics is a science of wealth.”',
-        options: [
-            'Marshall',
-            'Robbins',
-            'Adam Smith',
-            'J.K. Mehta'
-        ],
-        correctAnswer: 'Adam Smith',
-        userAnswer: '',
-    },
-    {
-        id: '18',
-        question: '“Economics is a science of logic.’’ Who said it.',
-        options: [
-            'Hicks',
-            'Keynes',
-            'Robbins',
-            'Marshall'
-        ],
-        correctAnswer: 'Robbins',
-        userAnswer: '',
-    },
-    {
-        id: '19',
-        question: 'Micro Economics includes:',
-        options: [
-            'Individual unit',
-            'Small units',
-            'Individual price determination',
-            'All of these'
-        ],
-        correctAnswer: 'All of these',
-        userAnswer: '',
-    },
-    {
-        id: '20',
-        question: 'On which base structure of economic problems has been installed?',
-        options: [
-            'Unlimited Wants',
-            'Limited Resources',
-            'Both (a) and (b)',
-            'None of the above'
-        ],
-        correctAnswer: 'Both (a) and (b)',
-        userAnswer: '',
-    },
-];
+import { getQuestionsApi } from '../../api/index'
 
 const totalExamMinute = 30;
 
@@ -253,8 +11,21 @@ const TestStartScreen = ({ navigation }) => {
 
     const [second, setSecond] = useState(0);
     const [minute, setMinute] = useState(totalExamMinute);
-    const [questions, setQuestions] = useState(questionsList);
+    const [questions, setQuestions] = useState([]);
     const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0);
+
+    useEffect(() => {
+        const fetchQuestions = async () => {
+            try {
+                const data = await getQuestionsApi();
+                setQuestions(data);
+            } catch (error) {
+                console.error('Error fetching questions:', error);
+            }
+        };
+
+        fetchQuestions();
+    }, []);
 
     useEffect(() => {
         setTimeout(() => {
@@ -276,25 +47,33 @@ const TestStartScreen = ({ navigation }) => {
         }
     }, [second,]);
 
-    return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: Colors.primaryColor }}>
-            <StatusBar translucent={false} backgroundColor={Colors.primaryColor} />
-            <ImageBackground
-                source={require('../../assets/images/bgImage.png')}
-                style={{ width: '100%', height: 250, flex: 1, }}
-                resizeMode="stretch"
-            >
-                <View style={{ flex: 1, }}>
-                    {header()}
-                    {timingInfo()}
-                    {questionNumberInfo()}
-                    <ScrollView contentContainerStyle={{ paddingTop: Sizes.fixPadding * 3.0, paddingBottom: Sizes.fixPadding * 6.0, }}>
-                        {questionInfo()}
-                    </ScrollView>
-                </View>
-            </ImageBackground>
-        </SafeAreaView>
-    )
+    if (questions?.length <= 0) {
+        return (
+            <View style={styles.container}>
+                <ActivityIndicator size="large" color="blue" />
+            </View>
+        );
+    } else {
+        return (
+            <SafeAreaView style={{ flex: 1, backgroundColor: Colors.primaryColor }}>
+                <StatusBar translucent={false} backgroundColor={Colors.primaryColor} />
+                <ImageBackground
+                    source={require('../../assets/images/bgImage.png')}
+                    style={{ width: '100%', height: 250, flex: 1, }}
+                    resizeMode="stretch"
+                >
+                    <View style={{ flex: 1, }}>
+                        {header()}
+                        {timingInfo()}
+                        {questionNumberInfo()}
+                        <ScrollView contentContainerStyle={{ paddingTop: Sizes.fixPadding * 3.0, paddingBottom: Sizes.fixPadding * 6.0, }}>
+                            {questionInfo()}
+                        </ScrollView>
+                    </View>
+                </ImageBackground>
+            </SafeAreaView>
+        )
+    }
 
     function updateQuestions({ id, userAnswer }) {
         const copyQuestions = questions;
@@ -397,7 +176,7 @@ const TestStartScreen = ({ navigation }) => {
                     }
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        onPress={() => { selectedQuestionIndex == questions.length - 1 ? navigation.push('TestResult') : setSelectedQuestionIndex(selectedQuestionIndex + 1) }}
+                        onPress={() => { selectedQuestionIndex == questions.length - 1 ? navigation.push('TestResult',{questions}) : setSelectedQuestionIndex(selectedQuestionIndex + 1) }}
                         style={styles.nextAndViewScoreStyle}
                     >
                         <Text style={{ ...Fonts.secondaryColor16SemiBold }}>
@@ -421,7 +200,7 @@ const TestStartScreen = ({ navigation }) => {
                 <Text style={{ marginBottom: Sizes.fixPadding + 3.0, ...Fonts.whiteColor20Medium }}>
                     Question {selectedQuestionIndex + 1}
                     <Text style={{ ...Fonts.whiteColor13Regular }}>
-                        { } /{questionsList.length}
+                        { } /{questions.length}
                     </Text>
                 </Text>
                 <View style={{ borderColor: Colors.lightGrayColor, borderStyle: 'dashed', borderWidth: 1.0, }} />
@@ -457,6 +236,11 @@ const TestStartScreen = ({ navigation }) => {
 export default TestStartScreen
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     headerWrapStyle: {
         marginVertical: Sizes.fixPadding * 3.0,
         marginHorizontal: Sizes.fixPadding * 2.0,

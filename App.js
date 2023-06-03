@@ -2,6 +2,7 @@ import React from 'react'
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { LogBox } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native';
+import 'expo-dev-client';
 import HomeScreen from './screens/home/homeScreen';
 import LoadingScreen from './components/loadingScreen';
 import NotificationsScreen from './screens/notifications/notificationsScreen';

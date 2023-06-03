@@ -53,6 +53,7 @@ const SignupScreen = ({ navigation }) => {
         }
         return true
     } 
+    
     const handleSignup = async () => {
         // Prepare the signup data
         const signupData = {
