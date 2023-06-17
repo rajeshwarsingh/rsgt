@@ -1,8 +1,9 @@
-import { StyleSheet, BackHandler, Text, View, SafeAreaView, StatusBar, Dimensions, Image, ActivityIndicator } from 'react-native'
+import { StyleSheet, BackHandler, Text, View, SafeAreaView, StatusBar, Dimensions, Image, ActivityIndicator,ImageBackground } from 'react-native'
 import React, { useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Colors, Fonts, Sizes } from '../constants/styles'
 import { useFocusEffect } from '@react-navigation/native';
+import backgroundSplash from "../assets/splash.png";
 
 const { width } = Dimensions.get('window');
 
@@ -39,13 +40,18 @@ const SplashScreen = ({ navigation }) => {
             console.log('Error checking user details:', error);
           }
        
-    }, 2000);
+    }, 3000);
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
+        <ImageBackground
+    source={require('../assets/splash.png')}
+    style={{ flex: 1 }}
+    resizeMode={'cover'}
+  >
+        <SafeAreaView style={{ flex: 1 }}>
             <StatusBar translucent={false} backgroundColor={Colors.primaryColor} />
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                {appIcon()}
+                {/* {appIcon()} */}
                 {appText()}
             </View>
             <ActivityIndicator
@@ -54,12 +60,13 @@ const SplashScreen = ({ navigation }) => {
                 style={{ position: "absolute", bottom: 40.0, alignSelf: 'center' }}
             />
         </SafeAreaView>
+        </ImageBackground>
     )
 
     function appText() {
         return (
             <Text style={{ marginTop: Sizes.fixPadding + 5.0, ...Fonts.blackColor15Medium }}>
-                Student App
+                {/* Student App */}
             </Text>
         )
     }
@@ -68,7 +75,7 @@ const SplashScreen = ({ navigation }) => {
         return (
             <View style={styles.appIconWrapStyle}>
                 <Image
-                    source={require('../assets/images/appIcon.png')}
+                    source={require('../assets/splash.png')}
                     style={{ width: width / 7.0, height: width / 7.0, resizeMode: 'contain' }}
                 />
             </View>

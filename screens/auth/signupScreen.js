@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, Image, Dimensions, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, Image, Dimensions, ScrollView, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { Colors, Fonts, Sizes } from '../../constants/styles'
 import { MaterialIcons, Ionicons, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
@@ -7,15 +7,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Gender from '../../components/gender';
 import DOBPicker from '../../components/DOBPicker';
 import StandardsPicker from '../../components/standardsPicker';
+import Midium from '../../components/MediumPicker';
 import { signupApi } from '../../api/index';
+import { getProfile } from '../../utils/index';
 
 const { width } = Dimensions.get('window');
 
 const standards = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+const midium = ['Hindi', 'English', 'Marathi'];
 
-const SignupScreen = ({ navigation }) => {
+const SignupScreen = ({ navigation, route }) => {
 
-    const [name, setname] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [mobileNumber, setmobileNumber] = useState('');
     const [email, setemail] = useState('');
     const [selectedGender, setSelectedGender] = useState('');
@@ -24,6 +28,34 @@ const SignupScreen = ({ navigation }) => {
     const [selectedMedium, setSelectedMedium] = useState('');
     const [selectedSchoolorCollage, setSchoolCollage] = useState('');
     const [selectedAddress, setSelectedAddress] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [profile, setProfile] = useState({});
+
+    const isEdit = route?.params?.isEdit;
+
+    useEffect(() => {
+        if(isEdit){
+
+            fetchProfile();
+        }
+    }, [])
+
+    async function fetchProfile() {
+        const data = await getProfile();
+        setProfile(data)
+        console.log("profile data :", data)
+        setFirstName(data?.firstName)
+        setLastName(data?.lastName)
+        setmobileNumber(data?.mobileNumber)
+        setemail(data?.email)
+        setSelectedGender(data?.gender)
+        setSelectedStandards(data?.standard)
+        setSelectedDOB(data?.dob)
+        setSelectedMedium(data?.medium)
+        setSchoolCollage(data?.schoolorCollage)
+        setSelectedAddress(data?.address)
+        // handleStandards(standard.indexOf(data.standard))
+    }
 
     const handleSelectGender = (gender) => {
         setSelectedGender(gender);
@@ -33,31 +65,53 @@ const SignupScreen = ({ navigation }) => {
         setSelectedStandards(standards[standardIdx])
     };
 
-    const handleDOBChange = (date) => {
-        setSelectedDOB(date);
+    const handleMedium = (midium) => {
+        setSelectedMedium(midium)
     };
 
-    const isValidatedSignup = (data)=>{
+    const handleDOBChange = (date) => {
+        setSelectedDOB(date ? date?.toString() : null);
+    };
 
-        if(!data.name){
-            Alert.alert(`Please provide Full Name`)
+    const isValidatedSignup = (data) => {
+        const mobileNumberPattern = /^[0-9]{10}$/;
+        const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+        if (!data.firstName || data.firstName.length<3 ) {
+            Alert.alert(`Invalid First Name`)
             return false
         }
-        if(!data.mobileNumber){
-            alert(`Please provide Mobile Number`)
+        if (!data.lastName || data.lastName.length<3) {
+            Alert.alert(`Invalid Last Name`)
             return false
         }
-        if(!data.gender){
+
+        if (!data.mobileNumber || !mobileNumberPattern.test(data.mobileNumber)) {
+            alert(`Invalid Mobile Number`)
+            return false
+        }
+        if (!data.standard) {
+            Alert.alert(`Please provide Standard`)
+            return false
+        }
+
+        if (!data.gender) {
             Alert.alert(`Please provide Gender`)
             return false
         }
+
+        if(data.email && !emailRegex.test(data.email)){
+            Alert.alert(`Invalid Email`)
+            return false
+        }
         return true
-    } 
-    
+    }
+
     const handleSignup = async () => {
         // Prepare the signup data
         const signupData = {
-            name,
+            firstName,
+            lastName,
             mobileNumber,
             email,
             gender: selectedGender,
@@ -68,15 +122,16 @@ const SignupScreen = ({ navigation }) => {
             address: selectedAddress,
         };
 
-        if(!isValidatedSignup(signupData)){
+        if (!isValidatedSignup(signupData)) {
             return
         }
 
         try {
+            setLoading(true);
             // Make the API call
             await signupApi(signupData);
             await AsyncStorage.setItem('userDetails', JSON.stringify(signupData));
-            
+            setLoading(false)
             // Display toast message
             Toast.show({
                 type: 'success',
@@ -102,7 +157,8 @@ const SignupScreen = ({ navigation }) => {
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: Sizes.fixPadding * 2.0, }}>
                     {signupImage()}
                     {createAccountText()}
-                    {nameInfo()}
+                    {firstNameInfo()}
+                    {lastNameInfo()}
                     {mobileNumberField()}
                     {emailField()}
                     {standard()}
@@ -110,22 +166,43 @@ const SignupScreen = ({ navigation }) => {
                     {DOB()}
                     {medium()}
                     {schoolorCollage()}
+                    {loading && <ActivityIndicator
+                        color={Colors.primaryColor}
+                        size={60}
+                        style={{ position: "absolute", bottom: 100.0, alignSelf: 'center' }}
+                    />}
                     {address()}
                     {signupButton()}
+
                 </ScrollView>
                 {alreadyAccountInfo()}
             </View>
         </SafeAreaView>
     )
 
-    function nameInfo() {
+    function firstNameInfo() {
         return (
             <View style={{ ...styles.textFieldWrapStyle, marginTop: Sizes.fixPadding * 3.0, }}>
                 <MaterialIcons name="person-outline" size={18} color={Colors.blackColor} />
                 <TextInput
-                    value={name}
-                    onChangeText={(value) => setname(value)}
-                    placeholder='Full Name'
+                    value={firstName}
+                    onChangeText={(value) => setFirstName(value)}
+                    placeholder='First Name *'
+                    placeholderTextColor={Colors.grayColor}
+                    style={styles.textFieldStyle}
+                    cursorColor={Colors.primaryColor}
+                />
+            </View>
+        )
+    }
+    function lastNameInfo() {
+        return (
+            <View style={{ ...styles.textFieldWrapStyle }}>
+                <MaterialIcons name="person-outline" size={18} color={Colors.blackColor} />
+                <TextInput
+                    value={lastName}
+                    onChangeText={(value) => setLastName(value)}
+                    placeholder='Last Name *'
                     placeholderTextColor={Colors.grayColor}
                     style={styles.textFieldStyle}
                     cursorColor={Colors.primaryColor}
@@ -141,7 +218,7 @@ const SignupScreen = ({ navigation }) => {
                 <TextInput
                     value={mobileNumber}
                     onChangeText={(value) => setmobileNumber(value)}
-                    placeholder='MobileNumber'
+                    placeholder='MobileNumber *'
                     placeholderTextColor={Colors.grayColor}
                     style={styles.textFieldStyle}
                     cursorColor={Colors.primaryColor}
@@ -194,27 +271,38 @@ const SignupScreen = ({ navigation }) => {
         return (
             <View style={{ ...styles.textFieldWrapStyle }}>
                 <MaterialIcons name="date-range" size={18} color={Colors.blackColor} />
-                <DOBPicker onDOBChange={handleDOBChange} />
+                <DOBPicker selectedDOB={selectedDOB} onDOBChange={handleDOBChange} />
                 {/* <DOBPicker /> */}
             </View>
         )
     }
+    // function medium() {
+    //     return (
+    //         <View style={{ ...styles.textFieldWrapStyle }}>
+    //             <Ionicons name="book" size={24} color="black" style={styles.icon} />
+
+    //             <TextInput
+    //                 value={selectedMedium}
+    //                 onChangeText={(value) => setSelectedMedium(value)}
+    //                 placeholder='Medium of study'
+    //                 placeholderTextColor={Colors.grayColor}
+    //                 style={styles.textFieldStyle}
+    //                 cursorColor={Colors.primaryColor}
+    //             />
+    //         </View>
+    //     )
+    // }
     function medium() {
         return (
             <View style={{ ...styles.textFieldWrapStyle }}>
-                <Ionicons name="book" size={24} color="black" style={styles.icon} />
-
-                <TextInput
-                    value={selectedMedium}
-                    onChangeText={(value) => setSelectedMedium(value)}
-                    placeholder='Medium of study'
-                    placeholderTextColor={Colors.grayColor}
-                    style={styles.textFieldStyle}
-                    cursorColor={Colors.primaryColor}
-                />
+                <MaterialIcons name="person-outline" size={18} color={Colors.blackColor} />
+                <View>
+                    <Midium selectedMedium={selectedMedium} onSelectMedium={handleMedium} />
+                </View>
             </View>
         )
     }
+
     function schoolorCollage() {
         return (
             <View style={{ ...styles.textFieldWrapStyle }}>
@@ -299,7 +387,7 @@ const SignupScreen = ({ navigation }) => {
                 style={styles.buttonStyle}
             >
                 <Text style={{ ...Fonts.whiteColor17Bold }}>
-                    Sign Up
+                    Submit
                 </Text>
             </TouchableOpacity>
         )
@@ -348,10 +436,10 @@ const SignupScreen = ({ navigation }) => {
         return (
             <View style={{ marginHorizontal: Sizes.fixPadding * 2.0, alignItems: 'center' }}>
                 <Text style={{ ...Fonts.primaryColor20SemiBold }}>
-                    Create An Account
+                    Profile Details
                 </Text>
                 <Text style={{ textAlign: 'center', marginTop: Sizes.fixPadding - 5.0, ...Fonts.grayColor13Regular }}>
-                    Please Fill the Details and Create your Account
+                    Please Fill the Details so that we know you more.
                 </Text>
             </View>
         )

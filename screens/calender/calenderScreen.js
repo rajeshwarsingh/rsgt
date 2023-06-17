@@ -59,7 +59,7 @@ const markedDates = [
             selected: true,
             selectedColor: Colors.redColor,
             accessibilityLabel: [{
-                title: 'Economics Weekly Test',
+                title: 'Economics Test',
                 subTitles: ['Statistics for Economics'],
                 date: '21 Feb 2023'
             }]
@@ -70,7 +70,7 @@ const markedDates = [
             selected: true,
             selectedColor: Colors.redColor,
             accessibilityLabel: [{
-                title: 'English Weekly Test',
+                title: 'English Test',
                 subTitles: ['Short Note'],
                 date: '23 Mar 2023'
             }]
@@ -90,7 +90,7 @@ const markedDates = [
             selected: true,
             selectedColor: Colors.redColor,
             accessibilityLabel: [{
-                title: 'English Weekly Test',
+                title: 'English Test',
                 subTitles: ['Short Note'],
                 date: '23 Mar 2023'
             }]
@@ -141,7 +141,7 @@ const markedDates = [
             selected: true,
             selectedColor: Colors.redColor,
             accessibilityLabel: [{
-                title: 'Computer Weekly Test',
+                title: 'Computer Test',
                 subTitles: ['Sets and Functions'],
                 date: '25 Oct 2023',
             }]
@@ -152,7 +152,7 @@ const markedDates = [
             selected: true,
             selectedColor: Colors.redColor,
             accessibilityLabel: [{
-                title: 'Mathematics Weekly Test',
+                title: 'Mathematics Test',
                 subTitles: ['Sets and Functions', 'Algebra'],
                 date: '21 Nov 2023'
             }]
@@ -163,7 +163,7 @@ const markedDates = [
             selected: true,
             selectedColor: Colors.redColor,
             accessibilityLabel: [{
-                title: 'Mathematics Weekly Test',
+                title: 'Mathematics Test',
                 subTitles: ['Sets and Functions', 'Algebra'],
                 date: '21 Nov 2023'
             }]
@@ -183,7 +183,7 @@ const markedDates = [
             selected: true,
             selectedColor: Colors.redColor,
             accessibilityLabel: [{
-                title: 'Computer Weekly Test',
+                title: 'Computer Test',
                 subTitles: ['Sets and Functions'],
                 date: '25 Oct 2023',
             }]
@@ -194,7 +194,7 @@ const markedDates = [
             selected: true,
             selectedColor: Colors.redColor,
             accessibilityLabel: [{
-                title: 'Mathematics Weekly Test',
+                title: 'Mathematics Test',
                 subTitles: ['Sets and Functions', 'Algebra'],
                 date: '21 Nov 2023'
             }]

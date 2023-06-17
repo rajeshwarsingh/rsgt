@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ScrollView, ImageBackground, TouchableOpacity, Image, TextInput } from 'react-native'
-import React, { useState,useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Colors, Fonts, Sizes } from '../../constants/styles'
 import { MaterialIcons, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { BottomSheet } from '@rneui/themed';
@@ -21,20 +21,30 @@ const StudentProfileScreen = ({ navigation }) => {
     //     schoolorCollage: selectedSchoolorCollage,
     //     address: selectedAddress,
     // };
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [mobileNumber, setmobileNumber] = useState('');
+    const [email, setemail] = useState('');
+    const [gender, setSelectedGender] = useState('');
+    const [standard, setSelectedStandards] = useState('');
+    const [dob, setSelectedDOB] = useState(null);
+    const [medium, setSelectedMedium] = useState('');
+    const [schoolorCollage, setSchoolCollage] = useState('');
+    const [address, setSelectedAddress] = useState('');
 
-    const [adharNo, setAdharNo] = useState('1234 5698 4569 1578');
-    const [academicYear, setAcademicYear] = useState('2020-2021');
-    const [admissionClass, setAdmissionClass] = useState('XI');
-    const [oldAdmissionNo, setOldAdmissionNo] = useState('A00125');
-    const [dateOfAdmission, setDateOfAdmission] = useState('01 Apr 2018');
-    const [dateOfBirth, setDateOfBirth] = useState('17 October 2002')
-    const [showCalendar, setShowCalendar] = useState(false);
-    const [calendarFor, setCalendarFor] = useState('');
-    const [parntMailId, setParntMailId] = useState('parent123@gmail.com');
-    const [motherName, setMotherName] = useState('Jenny Smith');
-    const [fatherName, setFatherName] = useState('Cameron Smith');
-    const [address, setAddress] = useState('Westheimer Rd. Santa Ana, Illinois');
-    const [showBottomSheet, setShowBottomSheet] = useState(false);
+    // const [adharNo, setAdharNo] = useState('1234 5698 4569 1578');
+    // const [academicYear, setAcademicYear] = useState('2020-2021');
+    // const [admissionClass, setAdmissionClass] = useState('XI');
+    // const [oldAdmissionNo, setOldAdmissionNo] = useState('A00125');
+    // const [dateOfAdmission, setDateOfAdmission] = useState('01 Apr 2018');
+    // const [dateOfBirth, setDateOfBirth] = useState('17 October 2002')
+    // // const [showCalendar, setShowCalendar] = useState(false);
+    // // const [calendarFor, setCalendarFor] = useState('');
+    // const [parntMailId, setParntMailId] = useState('parent123@gmail.com');
+    // const [motherName, setMotherName] = useState('Jenny Smith');
+    // const [fatherName, setFatherName] = useState('Cameron Smith');
+    // const [address, setAddress] = useState('Westheimer Rd. Santa Ana, Illinois');
+    // const [showBottomSheet, setShowBottomSheet] = useState(false);
 
     const [profile, setProfile] = useState({});
 
@@ -44,8 +54,21 @@ const StudentProfileScreen = ({ navigation }) => {
 
     async function fetchProfile() {
         const data = await getProfile();
-        console.log("@@@@@@@@@@@@@@@@@:",data)
+        console.log("@@@@@@@@@@@@@@@@@:", data)
         setProfile(data)
+
+        setFirstName(data?.firstName)
+        setLastName(data?.lastName)
+        setmobileNumber(data?.mobileNumber)
+        setemail(data?.email)
+        setSelectedGender(data?.gender)
+        setSelectedStandards(data?.standard)
+        setSelectedDOB(data?.dob)
+        setSelectedMedium(data?.medium)
+        setSchoolCollage(data?.schoolorCollage)
+        setSelectedAddress(data?.address)
+
+
         setAdmissionClass(data?.aadhar)
         setOldAdmissionNo(data?.aadhar)
         setDateOfAdmission(data?.aadhar)
@@ -69,261 +92,291 @@ const StudentProfileScreen = ({ navigation }) => {
                 <View style={styles.sheetStyle}>
                     <ScrollView showsVerticalScrollIndicator={false}>
                         {profileInfo()}
-                        {adharNoAndAcademicYearInfo()}
-                        {admissionClassAndOldAdmissionNoInfo()}
-                        {dateOfAdmissionAndBirthInfo()}
-                        {parentMailIdInfo()}
-                        {motherNameInfo()}
-                        {fatherNameInfo()}
+                        {fullNameInfo()}
+                        {mobileInfo()}
+                        {emailInfo()}
+                        {genderStdInfo()}
+                        {dobInfo()}
+                        {mediumInfo()}
+                        {schoolorCollageInfo()}
                         {addressInfo()}
                     </ScrollView>
                     {saveButton()}
                 </View>
             </ImageBackground>
-            {calendar()}
-            {changeProfilePicOptionsSheet()}
+            {/* {calendar()} */}
+            {/* {changeProfilePicOptionsSheet()} */}
         </SafeAreaView>
     )
 
-    function changeProfilePicOptionsSheet() {
-        return (
-            <BottomSheet
-                isVisible={showBottomSheet}
-                containerStyle={{ backgroundColor: 'rgba(0.5, 0.50, 0, 0.50)' }}
-                onBackdropPress={() => { setShowBottomSheet(false) }}
-            >
-                <TouchableOpacity
-                    activeOpacity={0.9}
-                    onPress={() => setShowBottomSheet(false)}
-                    style={styles.bottomSheetStyle}
-                >
-                    <Text style={{ ...Fonts.blackColor18SemiBold }}>
-                        Choose Option
-                    </Text>
-                    <View style={{ marginTop: Sizes.fixPadding * 2.0, flexDirection: 'row', }}>
-                        {changeProfilePicOptionsSort({
-                            bgColor: '#009688',
-                            icon: <Entypo name="camera" size={22} color={Colors.whiteColor} />,
-                            option: 'Camera'
-                        })}
-                        <View style={{ marginHorizontal: Sizes.fixPadding * 3.0, }}>
-                            {changeProfilePicOptionsSort({
-                                bgColor: '#00A7F7',
-                                icon: <MaterialCommunityIcons name="image" size={24} color={Colors.whiteColor} />,
-                                option: 'Gallery'
-                            })}
-                        </View>
-                        {changeProfilePicOptionsSort({
-                            bgColor: '#DD5A5A',
-                            icon: <MaterialCommunityIcons name="delete" size={24} color={Colors.whiteColor} />,
-                            option: 'Remove photo'
-                        })}
-                    </View>
-                </TouchableOpacity>
-            </BottomSheet>
-        )
-    }
+    // function changeProfilePicOptionsSheet() {
+    //     return (
+    //         <BottomSheet
+    //             isVisible={showBottomSheet}
+    //             containerStyle={{ backgroundColor: 'rgba(0.5, 0.50, 0, 0.50)' }}
+    //             onBackdropPress={() => { setShowBottomSheet(false) }}
+    //         >
+    //             <TouchableOpacity
+    //                 activeOpacity={0.9}
+    //                 onPress={() => setShowBottomSheet(false)}
+    //                 style={styles.bottomSheetStyle}
+    //             >
+    //                 <Text style={{ ...Fonts.blackColor18SemiBold }}>
+    //                     Choose Option
+    //                 </Text>
+    //                 <View style={{ marginTop: Sizes.fixPadding * 2.0, flexDirection: 'row', }}>
+    //                     {changeProfilePicOptionsSort({
+    //                         bgColor: '#009688',
+    //                         icon: <Entypo name="camera" size={22} color={Colors.whiteColor} />,
+    //                         option: 'Camera'
+    //                     })}
+    //                     <View style={{ marginHorizontal: Sizes.fixPadding * 3.0, }}>
+    //                         {changeProfilePicOptionsSort({
+    //                             bgColor: '#00A7F7',
+    //                             icon: <MaterialCommunityIcons name="image" size={24} color={Colors.whiteColor} />,
+    //                             option: 'Gallery'
+    //                         })}
+    //                     </View>
+    //                     {changeProfilePicOptionsSort({
+    //                         bgColor: '#DD5A5A',
+    //                         icon: <MaterialCommunityIcons name="delete" size={24} color={Colors.whiteColor} />,
+    //                         option: 'Remove photo'
+    //                     })}
+    //                 </View>
+    //             </TouchableOpacity>
+    //         </BottomSheet>
+    //     )
+    // }
 
-    function changeProfilePicOptionsSort({ bgColor, icon, option }) {
-        return (
-            <TouchableOpacity activeOpacity={0.8} onPress={() => { setShowBottomSheet(false) }}>
-                <View style={{ ...styles.changeProfilePicOptionsIconWrapStyle, backgroundColor: bgColor, }}>
-                    {icon}
-                </View>
-                <Text style={{ marginTop: Sizes.fixPadding - 5.0, width: 50.0, ...Fonts.grayColor13Regular }}>
-                    {option}
-                </Text>
-            </TouchableOpacity>
-        )
-    }
+    // function changeProfilePicOptionsSort({ bgColor, icon, option }) {
+    //     return (
+    //         <TouchableOpacity activeOpacity={0.8} onPress={() => { setShowBottomSheet(false) }}>
+    //             <View style={{ ...styles.changeProfilePicOptionsIconWrapStyle, backgroundColor: bgColor, }}>
+    //                 {icon}
+    //             </View>
+    //             <Text style={{ marginTop: Sizes.fixPadding - 5.0, width: 50.0, ...Fonts.grayColor13Regular }}>
+    //                 {option}
+    //             </Text>
+    //         </TouchableOpacity>
+    //     )
+    // }
 
     function saveButton() {
         return (
             <TouchableOpacity
                 activeOpacity={0.8}
-                onPress={() => { navigation.pop() }}
+                onPress={() => { navigation.push('Signup',{isEdit:true}) }}
                 style={styles.buttonStyle}
             >
                 <Text style={{ ...Fonts.whiteColor17Bold }}>
-                    Save
+                    Edit
                 </Text>
             </TouchableOpacity>
         )
     }
 
-    function addressInfo() {
-        return (
-            <View style={{ margin: Sizes.fixPadding * 2.0, }}>
-                <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
-                    Permanent Address
-                </Text>
-                <TextInput
-                    value={address}
-                    onChangeText={(value) => { setAddress(value) }}
-                    cursorColor={Colors.primaryColor}
-                    style={styles.textFieldStyle}
-                />
-            </View>
-        )
-    }
+    // function addressInfo() {
+    //     return (
+    //         <View style={{ margin: Sizes.fixPadding * 2.0, }}>
+    //             <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+    //                 Permanent Address
+    //             </Text>
+    //             <TextInput
+    //                 value={address}
+    //                 onChangeText={(value) => { setAddress(value) }}
+    //                 cursorColor={Colors.primaryColor}
+    //                 style={styles.textFieldStyle}
+    //             />
+    //         </View>
+    //     )
+    // }
 
-    function fatherNameInfo() {
-        return (
-            <View style={{ marginHorizontal: Sizes.fixPadding * 2.0, }}>
-                <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
-                    Father Name
-                </Text>
-                <TextInput
-                    value={fatherName}
-                    onChangeText={(value) => { setFatherName(value) }}
-                    cursorColor={Colors.primaryColor}
-                    style={styles.textFieldStyle}
-                />
-            </View>
-        )
-    }
+    // function fatherNameInfo() {
+    //     return (
+    //         <View style={{ marginHorizontal: Sizes.fixPadding * 2.0, }}>
+    //             <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+    //                 Father Name
+    //             </Text>
+    //             <TextInput
+    //                 value={fatherName}
+    //                 onChangeText={(value) => { setFatherName(value) }}
+    //                 cursorColor={Colors.primaryColor}
+    //                 style={styles.textFieldStyle}
+    //             />
+    //         </View>
+    //     )
+    // }
 
-    function motherNameInfo() {
-        return (
-            <View style={{ margin: Sizes.fixPadding * 2.0, }}>
-                <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
-                    Mother Name
-                </Text>
-                <TextInput
-                    value={motherName}
-                    onChangeText={(value) => { setMotherName(value) }}
-                    cursorColor={Colors.primaryColor}
-                    style={styles.textFieldStyle}
-                />
-            </View>
-        )
-    }
+    // function motherNameInfo() {
+    //     return (
+    //         <View style={{ margin: Sizes.fixPadding * 2.0, }}>
+    //             <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+    //                 Mother Name
+    //             </Text>
+    //             <TextInput
+    //                 value={motherName}
+    //                 onChangeText={(value) => { setMotherName(value) }}
+    //                 cursorColor={Colors.primaryColor}
+    //                 style={styles.textFieldStyle}
+    //             />
+    //         </View>
+    //     )
+    // }
 
-    function parentMailIdInfo() {
-        return (
-            <View style={{ marginHorizontal: Sizes.fixPadding * 2.0, marginTop: Sizes.fixPadding }}>
-                <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
-                    Parent Mail ID
-                </Text>
-                <TextInput
-                    value={parntMailId}
-                    onChangeText={(value) => { setParntMailId(value) }}
-                    cursorColor={Colors.primaryColor}
-                    style={styles.textFieldStyle}
-                    keyboardType="email-address"
-                />
-            </View>
-        )
-    }
+    // function parentMailIdInfo() {
+    //     return (
+    //         <View style={{ marginHorizontal: Sizes.fixPadding * 2.0, marginTop: Sizes.fixPadding }}>
+    //             <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+    //                 Parent Mail ID
+    //             </Text>
+    //             <TextInput
+    //                 value={parntMailId}
+    //                 onChangeText={(value) => { setParntMailId(value) }}
+    //                 cursorColor={Colors.primaryColor}
+    //                 style={styles.textFieldStyle}
+    //                 keyboardType="email-address"
+    //             />
+    //         </View>
+    //     )
+    // }
 
-    function calendar() {
-        const handleConfirm = (e, date) => {
-            calendarFor == 'birthDate'
-                ?
-                setDateOfBirth(`${date.getUTCDate()} ${monthsList[date.getUTCMonth()]} ${date.getFullYear()}`)
-                :
-                setDateOfAdmission(`${date.getUTCDate()} ${monthsList[date.getUTCMonth()]} ${date.getFullYear()}`)
-            setShowCalendar(false)
-        };
-        return (
-            showCalendar && <DateTimePicker
-                mode="date"
-                value={new Date()}
-                onChange={handleConfirm}
-                maximumDate={new Date()}
-            />
-        )
-    }
+    // function calendar() {
+    //     const handleConfirm = (e, date) => {
+    //         calendarFor == 'birthDate'
+    //             ?
+    //             setDateOfBirth(`${date.getUTCDate()} ${monthsList[date.getUTCMonth()]} ${date.getFullYear()}`)
+    //             :
+    //             setDateOfAdmission(`${date.getUTCDate()} ${monthsList[date.getUTCMonth()]} ${date.getFullYear()}`)
+    //         setShowCalendar(false)
+    //     };
+    //     return (
+    //         showCalendar && <DateTimePicker
+    //             mode="date"
+    //             value={new Date()}
+    //             onChange={handleConfirm}
+    //             maximumDate={new Date()}
+    //         />
+    //     )
+    // }
 
-    function dateOfAdmissionAndBirthInfo() {
-        return (
-            <View style={{ flexDirection: 'row', alignItems: 'center', margin: Sizes.fixPadding }}>
-                <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding, }}>
-                    <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
-                        Date of Admission
-                    </Text>
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        onPress={() => {
-                            setCalendarFor('admissionDate')
-                            setShowCalendar(true)
-                        }}
-                    >
-                        <Text style={{ ...styles.textFieldStyle, paddingTop: Sizes.fixPadding - 5.0 }}>
-                            {dateOfAdmission}
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding, }}>
-                    <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
-                        Date of Birth
-                    </Text>
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        onPress={() => {
-                            setCalendarFor('birthDate')
-                            setShowCalendar(true)
-                        }}
-                    >
-                        <Text style={{ ...styles.textFieldStyle, paddingTop: Sizes.fixPadding - 5.0 }}>
-                            {dateOfBirth}
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        )
-    }
+    // function dateOfAdmissionAndBirthInfo() {
+    //     return (
+    //         <View style={{ flexDirection: 'row', alignItems: 'center', margin: Sizes.fixPadding }}>
+    //             <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding, }}>
+    //                 <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+    //                     Date of Admission
+    //                 </Text>
+    //                 <TouchableOpacity
+    //                     activeOpacity={0.8}
+    //                     onPress={() => {
+    //                         setCalendarFor('admissionDate')
+    //                         setShowCalendar(true)
+    //                     }}
+    //                 >
+    //                     <Text style={{ ...styles.textFieldStyle, paddingTop: Sizes.fixPadding - 5.0 }}>
+    //                         {dateOfAdmission}
+    //                     </Text>
+    //                 </TouchableOpacity>
+    //             </View>
+    //             <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding, }}>
+    //                 <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+    //                     Date of Birth
+    //                 </Text>
+    //                 <TouchableOpacity
+    //                     activeOpacity={0.8}
+    //                     onPress={() => {
+    //                         setCalendarFor('birthDate')
+    //                         setShowCalendar(true)
+    //                     }}
+    //                 >
+    //                     <Text style={{ ...styles.textFieldStyle, paddingTop: Sizes.fixPadding - 5.0 }}>
+    //                         {dateOfBirth}
+    //                     </Text>
+    //                 </TouchableOpacity>
+    //             </View>
+    //         </View>
+    //     )
+    // }
 
-    function admissionClassAndOldAdmissionNoInfo() {
-        return (
-            <View style={{ flexDirection: 'row', alignItems: 'center', margin: Sizes.fixPadding }}>
-                <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding, }}>
-                    <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
-                        Admission Class
-                    </Text>
-                    <TextInput
-                        value={admissionClass}
-                        onChangeText={(value) => { setAdmissionClass(value) }}
-                        cursorColor={Colors.primaryColor}
-                        style={styles.textFieldStyle}
-                    />
-                </View>
-                <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding, }}>
-                    <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
-                        Old Admission No
-                    </Text>
-                    <TextInput
-                        value={oldAdmissionNo}
-                        onChangeText={(value) => { setOldAdmissionNo(value) }}
-                        cursorColor={Colors.primaryColor}
-                        style={styles.textFieldStyle}
-                    />
-                </View>
-            </View>
-        )
-    }
+    // function admissionClassAndOldAdmissionNoInfo() {
+    //     return (
+    //         <View style={{ flexDirection: 'row', alignItems: 'center', margin: Sizes.fixPadding }}>
+    //             <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding, }}>
+    //                 <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+    //                     Admission Class
+    //                 </Text>
+    //                 <TextInput
+    //                     value={admissionClass}
+    //                     onChangeText={(value) => { setAdmissionClass(value) }}
+    //                     cursorColor={Colors.primaryColor}
+    //                     style={styles.textFieldStyle}
+    //                 />
+    //             </View>
+    //             <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding, }}>
+    //                 <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+    //                     Old Admission No
+    //                 </Text>
+    //                 <TextInput
+    //                     value={oldAdmissionNo}
+    //                     onChangeText={(value) => { setOldAdmissionNo(value) }}
+    //                     cursorColor={Colors.primaryColor}
+    //                     style={styles.textFieldStyle}
+    //                 />
+    //             </View>
+    //         </View>
+    //     )
+    // }
 
-    function adharNoAndAcademicYearInfo() {
+    // function adharNoAndAcademicYearInfo() {
+    //     return (
+    //         <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: Sizes.fixPadding }}>
+    //             <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding, }}>
+    //                 <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+    //                     Adhar No
+    //                 </Text>
+    //                 <TextInput
+    //                     value={adharNo}
+    //                     onChangeText={(value) => { setAdharNo(value) }}
+    //                     cursorColor={Colors.primaryColor}
+    //                     style={styles.textFieldStyle}
+    //                 />
+    //             </View>
+    //             <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding, }}>
+    //                 <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+    //                     Academic Year
+    //                 </Text>
+    //                 <TextInput
+    //                     value={academicYear}
+    //                     onChangeText={(value) => { setAcademicYear(value) }}
+    //                     cursorColor={Colors.primaryColor}
+    //                     style={styles.textFieldStyle}
+    //                 />
+    //             </View>
+    //         </View>
+    //     )
+    // }
+
+    function fullNameInfo() {
         return (
             <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: Sizes.fixPadding }}>
                 <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding, }}>
                     <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
-                        Adhar No
+                        First Name
                     </Text>
                     <TextInput
-                        value={adharNo}
-                        onChangeText={(value) => { setAdharNo(value) }}
+                        value={firstName}
+                        // onChangeText={(value) => { setAdharNo(value) }}
                         cursorColor={Colors.primaryColor}
                         style={styles.textFieldStyle}
                     />
                 </View>
                 <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding, }}>
                     <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
-                        Academic Year
+                        Last Name
                     </Text>
                     <TextInput
-                        value={academicYear}
-                        onChangeText={(value) => { setAcademicYear(value) }}
+                        value={lastName}
+                        // onChangeText={(value) => { setAcademicYear(value) }}
                         cursorColor={Colors.primaryColor}
                         style={styles.textFieldStyle}
                     />
@@ -331,24 +384,172 @@ const StudentProfileScreen = ({ navigation }) => {
             </View>
         )
     }
-  
+    function contactInfo() {
+        return (
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: Sizes.fixPadding }}>
+                <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding, }}>
+                    <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+                        Mobile
+                    </Text>
+                    <TextInput
+                        value={mobileNumber}
+                        // onChangeText={(value) => { setAdharNo(value) }}
+                        cursorColor={Colors.primaryColor}
+                        style={styles.textFieldStyle}
+                    />
+                </View>
+                <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding, }}>
+                    <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+                        Email ID
+                    </Text>
+                    <TextInput
+                        value={email}
+                        // onChangeText={(value) => { setAcademicYear(value) }}
+                        cursorColor={Colors.primaryColor}
+                        style={styles.textFieldStyle}
+                    />
+                </View>
+            </View>
+        )
+    }
+    function mobileInfo() {
+        return (
+            <View style={{ marginHorizontal: Sizes.fixPadding * 2.0, }}>
+                <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+                    Mobile Phone
+                </Text>
+                <TextInput
+                    value={mobileNumber}
+                    // onChangeText={(value) => { setFatherName(value) }}
+                    cursorColor={Colors.primaryColor}
+                    style={styles.textFieldStyle}
+                />
+            </View>
+        )
+    }
+    function emailInfo() {
+        return (
+            <View style={{ marginHorizontal: Sizes.fixPadding * 2.0, }}>
+                <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+                    Email ID
+                </Text>
+                <TextInput
+                    value={email}
+                    // onChangeText={(value) => { setFatherName(value) }}
+                    cursorColor={Colors.primaryColor}
+                    style={styles.textFieldStyle}
+                />
+            </View>
+        )
+    }
+    
+    function genderStdInfo() {
+        return (
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: Sizes.fixPadding }}>
+                <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding, }}>
+                    <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+                        Gender
+                    </Text>
+                    <TextInput
+                        value={gender}
+                        // onChangeText={(value) => { setAdharNo(value) }}
+                        cursorColor={Colors.primaryColor}
+                        style={styles.textFieldStyle}
+                    />
+                </View>
+                <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding, }}>
+                    <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+                        Standard
+                    </Text>
+                    <TextInput
+                        value={standard}
+                        // onChangeText={(value) => { setAcademicYear(value) }}
+                        cursorColor={Colors.primaryColor}
+                        style={styles.textFieldStyle}
+                    />
+                </View>
+            </View>
+        )
+    }
+    function dobInfo() {
+        return (
+            <View style={{ marginHorizontal: Sizes.fixPadding * 2.0, }}>
+                <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+                    Date of Birth
+                </Text>
+                <TextInput
+                    value={dob}
+                    // onChangeText={(value) => { setFatherName(value) }}
+                    cursorColor={Colors.primaryColor}
+                    style={styles.textFieldStyle}
+                />
+            </View>
+        )
+    }
+    function mediumInfo() {
+        return (
+            <View style={{ marginHorizontal: Sizes.fixPadding * 2.0, }}>
+                <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+                    Medium
+                </Text>
+                <TextInput
+                    value={medium}
+                    // onChangeText={(value) => { setFatherName(value) }}
+                    cursorColor={Colors.primaryColor}
+                    style={styles.textFieldStyle}
+                />
+            </View>
+        )
+    }
+    function schoolorCollageInfo() {
+        return (
+            <View style={{ marginHorizontal: Sizes.fixPadding * 2.0, }}>
+                <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+                    School
+                </Text>
+                <TextInput
+                    value={schoolorCollage}
+                    // onChangeText={(value) => { setFatherName(value) }}
+                    cursorColor={Colors.primaryColor}
+                    style={styles.textFieldStyle}
+                />
+            </View>
+        )
+    }
+    function addressInfo() {
+        return (
+            <View style={{ marginHorizontal: Sizes.fixPadding * 2.0, }}>
+                <Text numberOfLines={1} style={{ ...Fonts.grayColor13Regular }}>
+                    Address
+                </Text>
+                <TextInput
+                    value={address}
+                    // onChangeText={(value) => { setFatherName(value) }}
+                    cursorColor={Colors.primaryColor}
+                    style={styles.textFieldStyle}
+                />
+            </View>
+        )
+    }
+
     function profileInfo() {
-        console.log('@@@@@@@@@@@@profile :',profile)
+        console.log('@@@@@@@@@@@@profile :', profile)
+        let url = profile.gender==='male'?require('../../assets/images/students/male.png'):require('../../assets/images/students/female.png')
         return (
             <View style={styles.profileInfoWrapStyle}>
                 <Image
-                    source={require('../../assets/images/students/student1.png')}
+                    source={url}
                     style={{ width: 75, height: 75, borderRadius: Sizes.fixPadding, }}
                 />
                 <View style={{ flex: 1, marginLeft: Sizes.fixPadding + 5.0, }}>
                     <Text numberOfLines={1} style={{ ...Fonts.blackColor18Bold, }}>
-                    {profile?.name}
+                        {profile?.firstName} {profile?.lastName}
                     </Text>
                     <Text style={{ ...Fonts.grayColor16Regular }}>
-                    Class {profile?.standard} | Gender: {profile?.gender}
+                        Class {profile?.standard} | Gender: {profile?.gender}
                     </Text>
                 </View>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => { setShowBottomSheet(true) }}
                     style={{ position: 'absolute', right: 12.0, top: 12.0, }}
@@ -357,7 +558,7 @@ const StudentProfileScreen = ({ navigation }) => {
                         source={require('../../assets/images/icons/camera.png')}
                         style={styles.cameraIconStyle}
                     />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
         )
     }

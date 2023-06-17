@@ -320,8 +320,9 @@ const HomeScreen = ({ navigation }) => {
             </TouchableOpacity>
         )
     }
-    console.log("profile :",profile)
+    // console.log("profile :",profile)
     function header() {
+        let url = profile.gender==='male'?require('../../assets/images/students/male.png'):require('../../assets/images/students/female.png')
         return (
             <View style={styles.headerWrapStyle}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, }}>
@@ -330,20 +331,23 @@ const HomeScreen = ({ navigation }) => {
                         onPress={() => { navigation.push('StudentProfile') }}
                     >
                         <Image
-                            source={require('../../assets/images/students/student1.png')}
+                            source={url}
                             style={styles.userImageStyle}
                         />
                     </TouchableOpacity>
                     <View style={{ flex: 1, marginHorizontal: Sizes.fixPadding * 2.0, }}>
                         <Text numberOfLines={1} style={{ ...Fonts.whiteColor18SemiBold }}>
-                            Hello, {profile?.name}
+                           R.S.G.T of Education
                         </Text>
                         <Text style={{ marginTop: Sizes.fixPadding - 2.0, ...Fonts.whiteColor15Regular, color: '#ffffff60' }}>
-                            Class {profile?.standard} | Gender: {profile?.gender}
+                            Hello, {profile?.firstName} {profile?.lastName}
                         </Text>
+                        {/* <Text style={{ marginTop: Sizes.fixPadding - 2.0, ...Fonts.whiteColor15Regular, color: '#ffffff60' }}>
+                            Class {profile?.standard} | Gender: {profile?.gender}
+                        </Text> */}
                     </View>
                 </View>
-                <Ionicons name="notifications-outline" size={24} color={Colors.whiteColor} onPress={() => { navigation.push('Notification') }} />
+                {/* <Ionicons name="notifications-outline" size={24} color={Colors.whiteColor} onPress={() => { navigation.push('Notification') }} /> */}
             </View>
         )
     }

@@ -6,8 +6,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 const runningTestsList = [
     {
         id: '1',
-        subject: 'Economics Weekly Test',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.Porta elementum elementum nisl sagittis. Mauris commodo, netus mauris eu nullam phasellus ipsum sapien.',
+        subject: 'Economics Test',
+        description: 'Economics test...More info about the test',
         questionsCount: 20,
         totalMinutes: 30,
     },

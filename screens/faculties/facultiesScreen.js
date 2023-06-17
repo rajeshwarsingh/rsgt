@@ -78,10 +78,10 @@ const FacultiesScreen = ({ navigation }) => {
                     </View>
                     <View style={{ marginLeft: Sizes.fixPadding - 5.0, }}>
                         <Image
-                            source={item.facultyImage}
+                            source={{ uri: item.facultyImage}}
                             style={{ width: 60.0, height: 60.0, borderRadius: 30.0, }}
                         />
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                             activeOpacity={0.8}
                             onPress={() => { navigation.push('ChatWithFaculty') }}
                             style={styles.chatBoxStyle}
@@ -94,7 +94,7 @@ const FacultiesScreen = ({ navigation }) => {
                             <Text style={{ marginLeft: Sizes.fixPadding - 8.0, ...Fonts.whiteColor10Bold }}>
                                 Chat
                             </Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                 </View>
                 <View style={{ backgroundColor: Colors.lightGrayColor, height: 1.0, marginVertical: Sizes.fixPadding + 5.0 }} />

@@ -3,8 +3,8 @@ import { View, TouchableOpacity, Text, Platform, StyleSheet, Alert } from 'react
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-const DOBPicker = ({ onDOBChange }) => {
-  const [dob, setDOB] = useState(null);
+const DOBPicker = ({ onDOBChange,selectedDOB }) => {
+  const [dob, setDOB] = useState(selectedDOB);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const handleDateChange = (event, selectedDate) => {

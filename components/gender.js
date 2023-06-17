@@ -30,7 +30,7 @@ const Gender = ({ selectedGender, onSelectGender }) => {
           size={20}
           color={selectedGender === 'other' ? 'green' : 'gray'}
         />
-        <Text style={styles.optionText}>Other</Text>
+        <Text style={styles.optionText}>Other  *</Text>
       </TouchableOpacity>
     </View>
   );

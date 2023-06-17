@@ -21,7 +21,7 @@ const TestResultScreen = ({ route, navigation }) => {
             correct++;
         };
 
-        if(question.correctAnswer === question.userAnswer) {
+        if(question.correctAnswer !== question.userAnswer) {
             Wrong++;
         };
     }));
@@ -54,9 +54,9 @@ const TestResultScreen = ({ route, navigation }) => {
                     <ScrollView showsVerticalScrollIndicator={false}>
                         {gradePercentageInfo()}
                         {greatMessage()}
-                        {resultSort({ title: 'Correct Answers', result:  `${correct}(${(correct/questions.length)*100}%)`, borderColor: Colors.darkGreenColor })}
-                        {resultSort({ title: 'Skipped Answers', result: `${skipped}(${(skipped/questions.length)*100}%)`, borderColor: Colors.secondaryColor })}
-                        {resultSort({ title: 'Wrong Answers', result:  `${Wrong}(${(Wrong/questions.length)*100}%)`, borderColor: Colors.redColor })}
+                        {resultSort({ title: 'Correct Answers', result:  `${correct}(${((correct/questions.length)*100).toFixed(2)}%)`, borderColor: Colors.darkGreenColor })}
+                        {resultSort({ title: 'Skipped Answers', result: `${skipped}(${((skipped/questions.length)*100).toFixed(2)}%)`, borderColor: Colors.secondaryColor })}
+                        {resultSort({ title: 'Wrong Answers', result:  `${Wrong}(${((Wrong/questions.length)*100).toFixed(2)}%)`, borderColor: Colors.redColor })}
                         {instruction()}
                         {leaderBoardAndAnswerSheetButton()}
                         {showAds()}
@@ -154,7 +154,7 @@ const TestResultScreen = ({ route, navigation }) => {
                 {promptGrade((correct/questions.length)*100)['message']}
                 </Text>
                 <Text style={{ marginTop: Sizes.fixPadding, textAlign: 'center', ...Fonts.blackColor30BebasRegular }}>
-                {profile?.name} !!
+                {profile?.firstName} {profile?.lastName} !!
                 </Text>
             </View>
         )
@@ -167,10 +167,10 @@ const TestResultScreen = ({ route, navigation }) => {
                 style={styles.gradeWithPercentageImageStyle}
             >
                 <Text style={{ textAlign: 'center', ...Fonts.whiteColor44BebasRegular }}>
-                    {(correct/questions.length)*100}%
+                    {((correct/questions.length)*100).toFixed(2)}%
                 </Text>
                 <Text style={{ textAlign: 'center', ...Fonts.whiteColor13SemiBold }}>
-                    GRADE {promptGrade((correct/questions.length)*100)['grade']}
+                    GRADE {promptGrade(((correct/questions.length)*100).toFixed(2))['grade']}
                 </Text>
             </ImageBackground>
         )

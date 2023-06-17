@@ -38,3 +38,15 @@ npx expo start --dev-client
 solution:-
 yarn add  @rneui/base 
 yarn add @rneui/themed
+
+## Create APK production build
+https://stackoverflow.com/questions/72204856/how-to-build-expo-apk-using-eas-build 
+Change production key in eas.json to this
+
+"production": {
+    "android": {
+       "buildType": "apk"
+    }
+}
+
+eas build --profile production --platform android

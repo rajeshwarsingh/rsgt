@@ -88,28 +88,35 @@ const TestStartScreen = ({ navigation }) => {
         setQuestions(newQuestions);
     }
 
+    // function stylingSort({ item }) {
+    //     return questions[selectedQuestionIndex].userAnswer
+    //         ?
+    //         (questions[selectedQuestionIndex].userAnswer == questions[selectedQuestionIndex].correctAnswer)
+    //             ?
+    //             questions[selectedQuestionIndex].userAnswer == item
+    //                 ?
+    //                 Colors.darkGreenColor
+    //                 :
+    //                 Colors.lightGrayColor
+    //             :
+    //             questions[selectedQuestionIndex].userAnswer == item
+    //                 ?
+    //                 Colors.redColor
+    //                 :
+    //                 questions[selectedQuestionIndex].correctAnswer == item
+    //                     ?
+    //                     Colors.darkGreenColor
+    //                     :
+    //                     Colors.lightGrayColor
+    //         :
+    //         Colors.lightGrayColor
+    // }
     function stylingSort({ item }) {
-        return questions[selectedQuestionIndex].userAnswer
-            ?
-            (questions[selectedQuestionIndex].userAnswer == questions[selectedQuestionIndex].correctAnswer)
-                ?
-                questions[selectedQuestionIndex].userAnswer == item
-                    ?
-                    Colors.darkGreenColor
-                    :
-                    Colors.lightGrayColor
-                :
-                questions[selectedQuestionIndex].userAnswer == item
-                    ?
-                    Colors.redColor
-                    :
-                    questions[selectedQuestionIndex].correctAnswer == item
-                        ?
-                        Colors.darkGreenColor
-                        :
-                        Colors.lightGrayColor
-            :
-            Colors.lightGrayColor
+        return questions[selectedQuestionIndex].userAnswer == item
+        ?
+        Colors.grayColor
+        :
+        Colors.lightGrayColor
     }
 
     function questionInfo() {
@@ -126,10 +133,10 @@ const TestStartScreen = ({ navigation }) => {
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 onPress={() => {
-                                    questions[selectedQuestionIndex].userAnswer
-                                        ?
-                                        null
-                                        :
+                                    // questions[selectedQuestionIndex].userAnswer
+                                    //     ?
+                                    //     null
+                                    //     :
                                         updateQuestions({ id: questions[selectedQuestionIndex].id, userAnswer: item })
                                 }}
                                 key={`${index}`}
@@ -169,11 +176,29 @@ const TestStartScreen = ({ navigation }) => {
                                             ?
                                             <MaterialCommunityIcons name="close-circle" size={20} color={Colors.redColor} />
                                             :
-                                            <MaterialCommunityIcons name="check-circle" size={20} color={Colors.darkGreenColor} />
+                                            <MaterialCommunityIcons name="check-circle" size={20} color={'blue'} />
                                 }
                             </TouchableOpacity>
                         ))
                     }
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    {(selectedQuestionIndex <= 0) && <TouchableOpacity style={styles.previousAndViewScoreStyle}><Text></Text></TouchableOpacity>}
+                    {(selectedQuestionIndex > 0) && <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => { selectedQuestionIndex == questions.length - 1 ? navigation.push('TestResult',{questions}) : setSelectedQuestionIndex(selectedQuestionIndex - 1) }}
+                        style={styles.previousAndViewScoreStyle}
+                    >
+                        <MaterialIcons
+                            name='arrow-back'
+                            color={Colors.secondaryColor}
+                            size={22}
+                            style={{ marginLeft: Sizes.fixPadding }}
+                        />
+                        <Text style={{ ...Fonts.secondaryColor16SemiBold }}>
+                        Previous
+                        </Text>
+                        
+                    </TouchableOpacity>}
                     <TouchableOpacity
                         activeOpacity={0.8}
                         onPress={() => { selectedQuestionIndex == questions.length - 1 ? navigation.push('TestResult',{questions}) : setSelectedQuestionIndex(selectedQuestionIndex + 1) }}
@@ -189,6 +214,7 @@ const TestStartScreen = ({ navigation }) => {
                             style={{ marginLeft: Sizes.fixPadding }}
                         />
                     </TouchableOpacity>
+                    </View>
                 </View>
             </View>
         )
@@ -283,6 +309,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-end',
+        marginTop: Sizes.fixPadding + 5.0,
+    },
+    previousAndViewScoreStyle: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
         marginTop: Sizes.fixPadding + 5.0,
     },
     questionInfoWrapStyle: {
